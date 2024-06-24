@@ -1,0 +1,6 @@
+@import './base.css';
+body {
+  background-color: #b5f395;
+  font-family: 'Arial', sans-serif;
+  margin: 0;
+}
