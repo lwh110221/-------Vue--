@@ -1,24 +1,21 @@
 <template>
     <div>
-        <h1>欢迎来到主页</h1>
         <div>
+            <!-- 搜索框和按钮 -->
+            <div class="search">
+                <input type="text" v-model="searchName" placeholder="搜索姓名">
+                <button @click="search">搜索</button>
+            </div>
             <!-- 显示/隐藏数据按钮 -->
             <button @click="toggleMessage">
                 {{ showMessage ? '隐藏' : '显示' }}
             </button>
             <!-- 添加用户按钮 -->
-            <button @click="showAddDialog = true" class="plusButton">
-                <svg class="plusIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30">
-                    <g mask="url(#mask0_21_345)">
-                    <path d="M13.75 23.75V16.25H6.25V13.75H13.75V6.25H16.25V13.75H23.75V16.25H16.25V23.75H13.75Z"></path>
-                    </g>
-                </svg>
-            </button>
+            <button @click="showAddDialog = true" class="plusButton">添加</button>
             <!-- 学生数据表 -->
             <table v-if="showMessage" style="width: 100%">
                 <thead>
                     <tr>
-                        <th>ID</th>
                         <th>姓名</th>
                         <th>用户名</th>
                         <th>密码</th>
@@ -26,7 +23,6 @@
                 </thead>
                 <tbody>
                     <tr v-for="student in students" :key="student.id">
-                        <td>{{ student.id }}</td>
                         <td>{{ student.name }}</td>
                         <td>{{ student.username }}</td>
                         <td>{{ student.password }}</td>
@@ -65,14 +61,12 @@ import axios from 'axios';
 
 export default {
     name: 'Home',
-    mounted() {
-        document.title = '主页';
-    },
     data() {
         return {
             students: [],
             showMessage: false,
             showAddDialog: false,
+            searchName: '',
             newStudent: {
                 name: '',
                 username: '',
@@ -98,7 +92,7 @@ export default {
         async addStudent() {
             try {
                 console.log('开始添加用户:', this.newStudent); // 调试输出，验证按钮点击有效
-                const response = await axios.post('http://localhost:8080/add', this.newStudent);
+                const response = await axios.post('http://localhost:8080/students/add', this.newStudent);
                 console.log('添加用户成功:', response.data); // 添加成功日志
                 this.students.push(response.data);
                 this.showAddDialog = false;
@@ -107,35 +101,102 @@ export default {
                 console.error('添加用户失败:', error);
             }
         },
+        async search() {
+            try {
+                const response = await axios.get('http://localhost:8080/students/search', {
+                    params: { name: this.searchName }
+                });
+                this.students = response.data;
+            } catch (error) {
+                this.$message.error('搜索失败');
+                console.error('搜索失败:', error);
+            }
+        }
     },
 };
 </script>
 
 <style scoped>
+/* 标题样式 */
 h1 {
     text-align: center;
+    color: #333;
+    margin-top: 20px;
 }
 
+/* 按钮样式 */
 button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
     margin: 10px;
+    font-size: 16px;
 }
 
+button:hover {
+    background-color: #45a049;
+}
+
+.plusButton {
+    background-color: #008CBA;
+}
+
+/* 搜索框样式 */
+.search {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.search input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-right: 10px;
+    width: 200px;
+    box-sizing: border-box;
+}
+
+.search button {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.search button:hover {
+    background-color: #45a049;
+}
+
+/* 表格样式 */
 table {
     width: 80%;
+    margin: 20px auto;
     border-collapse: collapse;
-    background-color: #eee0e0;
+    box-shadow: 0 2px 3px rgba(0,0,0,0.1);
 }
 
 th, td {
-    border: 3px solid #000000;
-    padding: 8px;
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
 }
 
 th {
     background-color: #f2f2f2;
-    text-align: left;
+    color: #333;
 }
 
+tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* 模态框样式 */
 .modal {
     display: flex;
     justify-content: center;
@@ -147,15 +208,16 @@ th {
     width: 100%;
     height: 100%;
     overflow: auto;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0,0,0,0.4);
 }
 
 .modal-content {
-    background-color: #fefefe;
+    background-color: white;
     padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
-    max-width: 500px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    width: 300px;
+    text-align: center;
 }
 
 .close {
@@ -171,64 +233,40 @@ th {
     text-decoration: none;
     cursor: pointer;
 }
-/* Note that you only needs to edit the config to customize the button! */
 
-.plusButton {
-  --plus_sideLength: 2.5rem;
-  --plus_topRightTriangleSideLength: 0.9rem;
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border: 1px solid white;
-  width: var(--plus_sideLength);
-  height: var(--plus_sideLength);
-  background-color: #000000;
-  overflow: hidden;
+/* 表单样式 */
+form div {
+    margin: 15px 0;
 }
 
-.plusButton::before {
-  position: absolute;
-  content: "";
-  top: 0;
-  right: 0;
-  width: 0;
-  height: 0;
-  border-width: 0 var(--plus_topRightTriangleSideLength) var(--plus_topRightTriangleSideLength) 0;
-  border-style: solid;
-  border-color: transparent white transparent transparent;
-  transition-timing-function: ease-in-out;
-  transition-duration: 0.2s;
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
 }
 
-.plusButton:hover {
-  cursor: pointer;
+input[type="text"],
+input[type="password"] {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
 }
 
-.plusButton:hover::before {
-  --plus_topRightTriangleSideLength: calc(var(--plus_sideLength) * 2);
+button[type="submit"] {
+    background-color: #4CAF50;
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    color: white;
+    font-size: 16px;
 }
 
-.plusButton:focus-visible::before {
-  --plus_topRightTriangleSideLength: calc(var(--plus_sideLength) * 2);
-}
-
-.plusButton>.plusIcon {
-  fill: white;
-  width: calc(var(--plus_sideLength) * 0.7);
-  height: calc(var(--plus_sideLength) * 0.7);
-  z-index: 1;
-  transition-timing-function: ease-in-out;
-  transition-duration: 0.2s;
-}
-
-.plusButton:hover>.plusIcon {
-  fill: black;
-  transform: rotate(180deg);
-}
-
-.plusButton:focus-visible>.plusIcon {
-  fill: black;
-  transform: rotate(180deg);
+button[type="submit"]:hover {
+    background-color: #45a049;
 }
 </style>

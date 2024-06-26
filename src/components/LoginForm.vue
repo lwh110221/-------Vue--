@@ -35,7 +35,8 @@ export default {
             username: this.username,
             password: this.password,
           });
-          this.$router.push('/home');
+          localStorage.setItem('user', JSON.stringify(response.data));
+          this.$router.push('/main');
         } catch (error) {
           this.$message.error('登录失败,用户名或密码错误');
           console.log(error);
@@ -47,13 +48,53 @@ export default {
 </script>
 
 <style scoped>
+/* 登录表单容器样式 */
 .login-form {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
 }
+
 h1 {
-  margin-bottom: 20px;
+    color: #333;
+    margin-bottom: 20px;
+    font-size: 24px;
+}
+
+.el-form {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    width: 400px;
+}
+
+.el-form-item {
+    margin-bottom: 20px;
+}
+
+.el-input {
+    width: 100%;
+}
+
+.el-button {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    background-color: #409EFF;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    color: white;
+}
+
+.el-button:hover {
+    background-color: #66b1ff;
+}
+
+.el-message {
+    margin-top: 20px;
 }
 </style>
