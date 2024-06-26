@@ -51,7 +51,7 @@ export default {
       username: '————',
       menuItems: [
         { name: '首页', icon: ['fas', 'home'], href: '/main/home' },
-        { name: '测试', icon: ['fas', 'search'], href: '/main/search' },
+        { name: '测试', icon: ['fas', 'search'], href: '/main/test' },
       ],
       bottomItems: [
         { name: 'Account', icon: ['fas', 'user'], href: '#' },
