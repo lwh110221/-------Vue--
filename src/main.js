@@ -5,10 +5,10 @@ import router from './router'
 
 
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faHome, faSearch, faChartBar, faFileAlt, faBox, faCog, faComments, faUser } from '@fortawesome/free-solid-svg-icons'
+import { faHome, faBox, faUser } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
-library.add(faHome, faSearch, faChartBar, faFileAlt, faBox, faCog, faComments, faUser)
+library.add(faHome, faBox, faUser)
 
 const app = createApp(App)
 

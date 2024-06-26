@@ -7,7 +7,7 @@
       <div class="user-info">
         <font-awesome-icon :icon="['fas', 'user']" class="user-icon" />
         <span class="username">{{ name }}</span>&nbsp;&nbsp;&nbsp;
-        <el-button @click="logout" type="primary">退出</el-button>
+        <el-button @click="logout" type="danger">退出</el-button>
       </div>
     </div>
     <div class="main-content">
@@ -51,7 +51,7 @@ export default {
       username: '————',
       menuItems: [
         { name: '首页', icon: ['fas', 'home'], href: '/main/home' },
-        { name: '测试', icon: ['fas', 'search'], href: '/main/test' },
+        { name: '测试', icon: ['fas', 'box'], href: '/main/test' },
       ],
       bottomItems: [
         { name: 'Account', icon: ['fas', 'user'], href: '#' },
