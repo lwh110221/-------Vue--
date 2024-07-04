@@ -6,19 +6,16 @@
                 <input type="text" v-model="searchName" placeholder="搜索姓名">
                 <button @click="search">搜索</button>
             </div>
-            <!-- 显示/隐藏数据按钮 -->
-            <button @click="toggleMessage">
-                {{ showMessage ? '隐藏' : '显示' }}
-            </button>
             <!-- 添加用户按钮 -->
             <button @click="showAddDialog = true" class="plusButton">添加</button>
             <!-- 学生数据表 -->
-            <table v-if="showMessage" style="width: 100%">
+            <table v-if="students.length > 0" style="width: 100%">
                 <thead>
                     <tr>
                         <th>姓名</th>
                         <th>用户名</th>
                         <th>密码</th>
+                        <th>操作</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -26,9 +23,13 @@
                         <td>{{ student.name }}</td>
                         <td>{{ student.username }}</td>
                         <td>{{ student.password }}</td>
+                        <td>
+                            <button @click="deleteStudent(student.id)">删除</button>
+                        </td>
                     </tr>
                 </tbody>
             </table>
+            <div v-else>没有搜索到</div>
         </div>
 
         <!-- 添加用户模态框 -->
@@ -64,7 +65,6 @@ export default {
     data() {
         return {
             students: [],
-            showMessage: false,
             showAddDialog: false,
             searchName: '',
             newStudent: {
@@ -83,17 +83,11 @@ export default {
                 console.error('获取数据失败:', error);
             }
         },
-        toggleMessage() {
-            this.showMessage = !this.showMessage;
-            if (this.showMessage) {
-                this.getMessage();
-            }
-        },
         async addStudent() {
             try {
-                console.log('开始添加用户:', this.newStudent); // 调试输出，验证按钮点击有效
+                console.log('开始添加用户:', this.newStudent);
                 const response = await axios.post('http://localhost:8080/students/add', this.newStudent);
-                console.log('添加用户成功:', response.data); // 添加成功日志
+                console.log('添加用户成功:', response.data);
                 this.students.push(response.data);
                 this.showAddDialog = false;
                 this.newStudent = { name: '', username: '', password: '' };
@@ -108,11 +102,22 @@ export default {
                 });
                 this.students = response.data;
             } catch (error) {
-                this.$message.error('搜索失败');
                 console.error('搜索失败:', error);
+            }
+        },
+        async deleteStudent(id) {
+            try {
+                await axios.delete(`http://localhost:8080/students/${id}`);
+                this.students = this.students.filter(student => student.id !== id);
+                alert('删除成功!'); 
+            } catch (error) {
+                console.error('删除用户失败:', error);
             }
         }
     },
+    mounted() {
+        this.getMessage();
+    }
 };
 </script>
 
