@@ -192,7 +192,7 @@ th, td {
     border-bottom: 1px solid #ddd;
 }
 td{
-    color: #1056ec;
+    color: #0e4bcf;
     font-weight: bold;
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
