@@ -191,7 +191,11 @@ th, td {
     text-align: left;
     border-bottom: 1px solid #ddd;
 }
-
+td{
+    color: #1056ec;
+    font-weight: bold;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
 th {
     background-color: #f2f2f2;
     color: #333;
