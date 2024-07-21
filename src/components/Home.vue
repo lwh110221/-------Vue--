@@ -24,6 +24,7 @@
                         <td>{{ student.username }}</td>
                         <td>{{ student.password }}</td>
                         <td>
+                            <button @click="openEditDialog(student)">编辑</button>
                             <button @click="deleteStudent(student.id)">删除</button>
                         </td>
                     </tr>
@@ -54,6 +55,31 @@
                 </form>
             </div>
         </div>
+
+        <!-- 编辑用户模态框 -->
+        <div v-if="showEditDialog" class="modal">
+            <div class="modal-content">
+                <span class="close" @click="showEditDialog = false">&times;</span>
+                <h2>编辑用户</h2>
+                <form @submit.prevent="editStudent">
+                    <div>
+                        <label for="edit-name">姓名</label>
+                        <input type="text" id="edit-name" v-model="editStudentData.name">
+                    </div>
+                    <div>
+                        <label for="edit-username">用户名</label>
+                        <input type="text" id="edit-username" v-model="editStudentData.username">
+                    </div>
+                    <div>
+                        <label for="edit-password">密码</label>
+                        <input type="text" id="edit-password" v-model="editStudentData.password">
+                    </div>
+                    <button type="submit">保存</button>
+                </form>
+            </div>
+        </div>
+
+
     </div>
 </template>
 
@@ -66,8 +92,15 @@ export default {
         return {
             students: [],
             showAddDialog: false,
+            showEditDialog: false,
             searchName: '',
             newStudent: {
+                name: '',
+                username: '',
+                password: '',
+            },
+            editStudentData: {
+                id: null,
                 name: '',
                 username: '',
                 password: '',
@@ -85,9 +118,7 @@ export default {
         },
         async addStudent() {
             try {
-                console.log('开始添加用户:', this.newStudent);
                 const response = await axios.post('http://localhost:8080/students/add', this.newStudent);
-                console.log('添加用户成功:', response.data);
                 this.students.push(response.data);
                 this.showAddDialog = false;
                 this.newStudent = { name: '', username: '', password: '' };
@@ -112,6 +143,22 @@ export default {
                 alert('删除成功!'); 
             } catch (error) {
                 console.error('删除用户失败:', error);
+            }
+        },
+        openEditDialog(student) {
+            this.editStudentData = { ...student };
+            this.showEditDialog = true;
+        },
+        async editStudent() {
+            try {
+                await axios.put(`http://localhost:8080/students/${this.editStudentData.id}`, this.editStudentData);
+                const index = this.students.findIndex(student => student.id === this.editStudentData.id);
+                if (index !== -1) {
+                    this.students.splice(index, 1, this.editStudentData);
+                }
+                this.showEditDialog = false;
+            } catch (error) {
+                console.error('编辑用户失败:', error);
             }
         }
     },

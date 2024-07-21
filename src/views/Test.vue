@@ -1,6 +1,6 @@
   <template>
     <div class="home-content">
-      <h1>叫爹</h1>
+      <h1>测试</h1>
     </div>
   </template>
   
@@ -14,5 +14,8 @@
   <style scoped>
   .home-content {
     padding: 20px;
+  }
+  .h1{
+    color: #000000;
   }
   </style>
